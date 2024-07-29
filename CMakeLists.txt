@@ -38,9 +38,6 @@ find_package(OpenCV ${OPENCV_MIN_VERSION} REQUIRED)
         message("OPENCV VERSION FOUND: ${OpenCV_VERSION}")
     endif()
 
-    
-find_package(Pangolin REQUIRED)
-find_package(Eigen3 3.1.0 REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gstreamer REQUIRED gstreamer-1.0)
@@ -48,7 +45,6 @@ pkg_search_module(gstreamer REQUIRED IMPORTED_TARGET gstreamer-1.0 >= 1.4)
 pkg_search_module(gstreamer-sdp REQUIRED IMPORTED_TARGET gstreamer-sdp-1.0 >= 1.4)
 pkg_search_module(gstreamer-app REQUIRED IMPORTED_TARGET gstreamer-app-1.0 >= 1.4)
 pkg_search_module(gstreamer-video REQUIRED IMPORTED_TARGET gstreamer-video-1.0 >= 1.4)
-
 pkg_check_modules(GLIB REQUIRED glib-2.0)
 
 add_executable(${PROJECT_NAME}
