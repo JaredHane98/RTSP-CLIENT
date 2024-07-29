@@ -24,7 +24,15 @@ private:
     GstElement* m_pipeline;
     GMainLoop*  m_loop;
 
-
+    /**
+    @brief creates a gstreame element
+    @param element Gstelement to link
+    @param caps caps filter can be NULL
+    @param child_element child to link
+    @param element_name element name
+    @param child_element_name child_element_name
+    @return true on success false on failure
+    */
     bool linkElement(GstElement* element, GstCaps* caps, GstElement* child_element, const std::string& element_name, const std::string& child_element_name)
     {
         if(G_UNLIKELY(!GST_IS_ELEMENT(element)))
@@ -57,7 +65,13 @@ private:
         }
         return true;
     }
-
+    /**
+    @brief creates a gstream element 
+    @param element gstElement plugin name
+    @param element_name element name
+    @param pipe to attach
+    @returns contructed element or NULL on failure
+    */
     GstElement* createElement(const std::string& element, const std::string& element_name, GstElement* pipe)
     {   
         GstElement* output;
@@ -77,21 +91,36 @@ private:
     }
 
 public:
-    GStreamPipeline(const std::string& pipeline_name)
+    /**
+    @brief constructs a pipeline with the provided arguments
+    @param pipeline_name name of the pipeline to construct
+    @param init_gstream initialize gstreamer in constructor?
+    @param create_main_loop create a GMainLoop in constructor? 
+    */
+    GStreamPipeline(const std::string& pipeline_name, const bool init_gstream = true, const bool create_main_loop = true)
         : m_pipeline_map(), m_pipeline(NULL), m_loop(NULL)
     {
-        gst_init(NULL, NULL);
-        m_loop = g_main_loop_new(NULL, FALSE);
+        if(init_gstream)
+            gst_init(NULL, NULL);
+        if(create_main_loop)
+            m_loop = g_main_loop_new(NULL, FALSE);
+        
         m_pipeline = gst_pipeline_new(pipeline_name.c_str());
     }
-
+    /**
+    @brief does nothing
+    */
     ~GStreamPipeline()
     {}
 
     GStreamPipeline(GStreamPipeline&&) = delete;
     GStreamPipeline(const GStreamPipeline&) = delete;
-
-
+    /**
+    @brief adds an element to the pipeline
+    @param element GstElement plugin name
+    @param element_name element_name
+    @returns true on success false on failure
+    */
     bool addElement(const std::string& element, const std::string& element_name)
     {
         GstElement* new_element = createElement(element, element_name, m_pipeline); 
@@ -103,6 +132,12 @@ public:
         m_pipeline_map[element_name] = {new_element, NULL};
         return true;
     }
+    /**
+    @brief adds a element to the pipeline
+    @param element GstElement plugin name
+    @param element_name element_name
+    @param element_caps element_caps string
+    */
     bool addElement(const std::string& element, const std::string& element_name, const std::string& element_caps)
     {
         GstElement* new_element = createElement(element, element_name, m_pipeline); 
@@ -120,7 +155,6 @@ public:
         m_pipeline_map[element_name] = {new_element, caps};
         return false;
     }
-
     /** 
     @brief Links the elements by list of name
     @param element_name list of nanes
@@ -155,8 +189,6 @@ public:
         }
         return true; 
     }
-
-
     /**
     @brief Sets the element signal to supplied callback
     @param element element name
@@ -177,7 +209,6 @@ public:
         
         g_signal_connect(G_OBJECT(element), signal_name.c_str(), G_CALLBACK (callback), user_data);
     }
-
     /**
     @brief Sets the element property to the provided value
     @param element elements name
