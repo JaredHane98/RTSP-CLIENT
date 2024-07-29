@@ -1,0 +1,2 @@
+- cmake ./ && make the repository
+- ./CLIENT_PROGRAM **RTSP STREAM LOCATION**
