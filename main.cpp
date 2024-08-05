@@ -208,6 +208,7 @@ public:
             return false;
         
         g_signal_connect(G_OBJECT(element), signal_name.c_str(), G_CALLBACK (callback), user_data);
+	return true;
     }
     /**
     @brief Sets the element property to the provided value
@@ -228,6 +229,7 @@ public:
             return false;
         
         g_object_set(G_OBJECT(element), property_name.c_str(), property_value, NULL);
+	return true;
     }
     /**
     @brief Returns the GstElement by name
